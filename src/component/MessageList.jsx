@@ -6,7 +6,7 @@ import MessageItem from "./MessageItem";
 function MessageList() {
   const [messages, setMessages] = useState([]);
   const chatWindow = useRef(null);
-  const socket = useContext(SocketContext);
+  const {socket} = useContext(SocketContext);
 
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -27,6 +27,7 @@ function MessageList() {
   );
 
   useEffect(() => {
+    console.log(messages)
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
 
     return () => {

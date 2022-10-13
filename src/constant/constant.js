@@ -7,5 +7,10 @@ export const SOCKET_EVENT = {
 
 export const ROUTE_PATH = {
     HOME: '/',
-    LOGIN: '/login'
+    LOGIN: '/login',
+    LOBBY: '/lobby',
+}
+
+export const API_PATH = {
+    LOGIN: '/confirm',
 }

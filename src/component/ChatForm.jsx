@@ -3,8 +3,8 @@ import { SOCKET_EVENT } from "../constant/constant";
 import { SocketContext } from "../service/socket";
 
 export default function ChatForm({nickname}) {
-    const [typingMessage, setTypingMessage] = useState("");
-  const socket = useContext(SocketContext);
+  const [typingMessage, setTypingMessage] = useState("");
+  const {socket} = useContext(SocketContext);
 
   // textarea에서 텍스트를 입력하면 typingMessage state를 변경합니다.
   const handleChangeTypingMessage = useCallback(event => {
@@ -34,7 +34,7 @@ export default function ChatForm({nickname}) {
             <form className="border border-red">
                 <div className="w-full">
                     <textarea
-                    className="w-full"
+                    className="w-full text-bgPrimary"
                     maxLength={400}
                     autoFocus
                     value={typingMessage}

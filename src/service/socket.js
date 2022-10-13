@@ -2,7 +2,7 @@ import { createContext } from "react";
 import socketIo from "socket.io-client";
 import dayjs from "dayjs";
 
-export const socket = socketIo(String(process.env.REACT_APP_BACK_URL), { withCredentials: true });
+export const socket = socketIo(String(window.location.origin + ':4000'), { withCredentials: true });
 export const SocketContext = createContext(socket);
 export const SOCKET_EVENT = {
   JOIN_ROOM: "JOIN_ROOM",
@@ -19,7 +19,7 @@ export const makeMessage = (pongData) => {
 
   switch (type) {
     case SOCKET_EVENT.JOIN_ROOM: {
-      contentLabel = `${nickname} has joined the room.`;
+      contentLabel = `${nickname} has joined the room.${process.env.REACT_APP_BACK_URL}`;
       break;
     }
     case SOCKET_EVENT.SEND_MESSAGE: {
