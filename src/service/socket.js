@@ -1,8 +1,8 @@
 import { createContext } from "react";
-import socketIo from "socket.io-client";
+import socketClient from "socket.io-client";
 import dayjs from "dayjs";
 
-export const socket = socketIo(String(window.location.origin + ':4000'), { withCredentials: true });
+export const socket = socketClient(String(process.env.REACT_APP_BACK_URL), { withCredentials: true });
 export const SocketContext = createContext(socket);
 export const SOCKET_EVENT = {
   JOIN_ROOM: "JOIN_ROOM",

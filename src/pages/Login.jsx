@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../component/Button";
-import { API_PATH } from "../constant/constant";
 import { AccountContext } from "../context/account";
-import { client } from "../service/client";
+import getConfirmLogin from "../service/getConfirmLogin";
 import { SocketContext } from "../service/socket";
 
 export default function Login () {
@@ -13,12 +12,7 @@ export default function Login () {
     const navigator = useNavigate();
     const checkLogin = async() => {
         console.log(ip,nickname,process.env.REACT_APP_BACK_URL)
-        const {data} = await client.get(API_PATH.LOGIN,{
-            params: {
-                ip,
-                nickname
-            }
-        })
+        const data = await getConfirmLogin({ip,nickname});
         if(data.state) {
             setAccount({ip,nickname});
             console.log(account);

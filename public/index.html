@@ -5,7 +5,6 @@ class="bg-bgSecondary text-textPrimary border-borderPrimary"
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link href="/dist/output.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -32,6 +31,7 @@ class="bg-bgSecondary text-textPrimary border-borderPrimary"
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <div id="bottom-sheet-root"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -43,4 +43,24 @@ class="bg-bgSecondary text-textPrimary border-borderPrimary"
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script>
+    const htmlRef = document.querySelector('html')
+    const delay = ms => {
+      return new Promise(resolve =>
+        setTimeout(() => {
+          resolve(ms)
+        }, ms),
+      )
+    }
+    window.removeGlobalOverflowHidden = function () {
+      delay(500).then(() => {
+        htmlRef.style.overflow = 'auto'
+      })
+    }
+    window.addGlobalOverflowHidden = function () {
+      delay(500).then(() => {
+        htmlRef.style.overflow = 'hidden'
+      })
+    }
+  </script>
 </html>

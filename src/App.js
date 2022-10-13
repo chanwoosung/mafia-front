@@ -34,13 +34,11 @@ function App() {
         <AccountContextContainer>
           <Suspense>
             <Routes>
-              <Route path={ROUTE_PATH.LOGIN} index element={<Login nickname={Login} />}>
-              </Route>
               <Route path={ROUTE_PATH.HOME} element={<Home />}>
+                <Route path={ROUTE_PATH.LOBBY} element={<Lobby />}>
+                </Route>
+                <Route path='*' element={<div>error</div>} />
               </Route>
-              <Route path={ROUTE_PATH.LOBBY} element={<Lobby />}>
-              </Route>
-              <Route path='*' element={<div>error</div>} />
             </Routes>
           </Suspense>
         </AccountContextContainer>

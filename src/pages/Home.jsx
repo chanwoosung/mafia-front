@@ -1,11 +1,22 @@
-import ChatForm from "../component/ChatForm";
-import MessageList from "../component/MessageList";
+import { Outlet, useLocation } from "react-router-dom";
+import Header from "../component/Header";
+import { ROUTE_PATH } from "../constant/constant";
+import Login from "./Login";
 
 export default function Home({nickname}) {
+    const {pathname} = useLocation();
     return (
         <div>
-            <MessageList nickname={nickname} />
-            <ChatForm nickname={nickname} />
+            <Header/>
+            {pathname === ROUTE_PATH.HOME ? (
+                <Login />
+            ) : (
+                <div className="min-h-[100vh]">
+                    <Outlet />
+                </div>
+            )}
+            {/* <MessageList nickname={nickname} />
+            <ChatForm nickname={nickname} /> */}
         </div>
     )
 }
