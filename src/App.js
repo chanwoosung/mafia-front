@@ -5,13 +5,15 @@ import useRandomId from './hooks/useRandomID';
 import { ROUTE_PATH, SOCKET_EVENT } from './constant/constant';
 import {Route, Routes} from 'react-router-dom'
 import { AccountContextContainer } from './context/account';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const Home = lazy(()=> import('./pages/Home'))
 const Login = lazy(()=> import('./pages/Login'))
 const Lobby = lazy(()=> import('./pages/Lobby'))
 
 function App() {
-  const {ipID:ip} = useRandomId()
+  const {ipID:ip} = useRandomId();
+  const queryClient = new QueryClient();
   
   useEffect(()=>{
     socket.emit(SOCKET_EVENT.JOIN_ROOM, { ip });
@@ -31,17 +33,19 @@ function App() {
   return (
     <div className="App min-h-[100vh]">
       <SocketContext.Provider value={{socket,ip}}>
-        <AccountContextContainer>
-          <Suspense>
-            <Routes>
-              <Route path={ROUTE_PATH.HOME} element={<Home />}>
-                <Route path={ROUTE_PATH.LOBBY} element={<Lobby />}>
+        <QueryClientProvider client={queryClient}>
+          <AccountContextContainer>
+            <Suspense>
+              <Routes>
+                <Route path={ROUTE_PATH.HOME} element={<Home />}>
+                  <Route path={ROUTE_PATH.LOBBY} element={<Lobby />}>
+                  </Route>
+                  <Route path='*' element={<div>error</div>} />
                 </Route>
-                <Route path='*' element={<div>error</div>} />
-              </Route>
-            </Routes>
-          </Suspense>
-        </AccountContextContainer>
+              </Routes>
+            </Suspense>
+          </AccountContextContainer>
+        </QueryClientProvider>
       </SocketContext.Provider>
     </div>
   );

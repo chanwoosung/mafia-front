@@ -1,6 +1,6 @@
 import { client } from "./client";
 
 export default async function getRoomList() {
-    const {data} = await client.get('/make-room');
+    const {data: {data}} = await client.get('/get-rooms');
     return data;
 }
