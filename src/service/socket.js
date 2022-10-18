@@ -19,7 +19,7 @@ export const makeMessage = (pongData) => {
 
   switch (type) {
     case SOCKET_EVENT.JOIN_ROOM: {
-      contentLabel = `${nickname} has joined the room.${process.env.REACT_APP_BACK_URL}`;
+      contentLabel = `${nickname} has joined the room.`;
       break;
     }
     case SOCKET_EVENT.SEND_MESSAGE: {

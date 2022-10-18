@@ -8,28 +8,14 @@ import { AccountContextContainer } from './context/account';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const Home = lazy(()=> import('./pages/Home'))
-const Login = lazy(()=> import('./pages/Login'))
 const Lobby = lazy(()=> import('./pages/Lobby'))
+const Room = lazy(()=> import('./pages/Room'))
 
 function App() {
   const {ipID:ip} = useRandomId();
   const queryClient = new QueryClient();
   
-  useEffect(()=>{
-    socket.emit(SOCKET_EVENT.JOIN_ROOM, { ip });
-    if(ip===undefined) {
-      return;
-    }
-    return () => {
-      if (socket.readyState === 1) { 
-          socket.emit('disconnect', {reason:'test'});
-          socket.close();
-      }
-    };
-  },[ip])
-  useEffect(() => {
-
-  },[]);
+  
   return (
     <div className="App min-h-[100vh]">
       <SocketContext.Provider value={{socket,ip}}>
@@ -40,6 +26,7 @@ function App() {
                 <Route path={ROUTE_PATH.HOME} element={<Home />}>
                   <Route path={ROUTE_PATH.LOBBY} element={<Lobby />}>
                   </Route>
+                  <Route path={ROUTE_PATH.ROOM} element={<Room />} />
                   <Route path='*' element={<div>error</div>} />
                 </Route>
               </Routes>

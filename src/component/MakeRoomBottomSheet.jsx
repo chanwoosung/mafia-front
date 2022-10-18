@@ -1,11 +1,14 @@
 import { useCallback } from "react";
 import { Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { client } from "../service/client";
 import BottomSheet from "./BottomSheet";
 import Button from "./Button";
 
 export default function MakeRoomBottomSheet({form,setIsOpenBottomSheet, account}) {
     const {register,handleSubmit,reset,control} = form
+    const navigate = useNavigate();
+
     const onSubmit = useCallback(
       async(data) => {
         console.log(data);
@@ -13,6 +16,10 @@ export default function MakeRoomBottomSheet({form,setIsOpenBottomSheet, account}
             roomName: data.roomName,
             amountCitizen: data.amountCitizen,
             amountMafia: data.amountMafia,
+            roomOwner: {
+                ip: account.ip,
+                nickname: account.nickname,
+            }
         });
         if(error) {
             console.log(error);
@@ -23,7 +30,9 @@ export default function MakeRoomBottomSheet({form,setIsOpenBottomSheet, account}
                 ip: account.ip,
                 nickname: account.nickname,
             });
-            console.log(joinInfo);
+            if(joinInfo) {
+                navigate(`/room/${result.roomId}`);
+            }
         }
       },
       [],
@@ -36,7 +45,7 @@ export default function MakeRoomBottomSheet({form,setIsOpenBottomSheet, account}
     
     return (
         <>
-            <BottomSheet close={handleClose} className={"!h-[30vh]"} >
+            <BottomSheet close={handleClose} className={"!h-[50vh]"} >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col gap-5 px-5 pt-10">
                         <div className="flex gap-5 justify-center">

@@ -5,9 +5,9 @@ import MessageItem from "./MessageItem";
 
 function MessageList() {
   const [messages, setMessages] = useState([]);
+  const [scrollHeight, setScrollHeight] = useState(0);
   const chatWindow = useRef(null);
   const {socket} = useContext(SocketContext);
-
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
       chatWindow.current.scrollTo({
@@ -20,23 +20,28 @@ function MessageList() {
   const handleReceiveMessage = useCallback(
     pongData => {
       const newMessage = makeMessage(pongData);
-      setMessages(messages => [...messages, newMessage]);
-      moveScrollToReceiveMessage();
+      setMessages([...messages, newMessage]);
+      setScrollHeight(chatWindow.current.scrollHeight);
     },
-    [moveScrollToReceiveMessage]
+    [messages]
   );
 
   useEffect(() => {
-    console.log(messages)
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
-
     return () => {
       socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
     };
   }, [socket, handleReceiveMessage]);
 
+  useEffect(()=>{
+    if(scrollHeight !== chatWindow.current.scrollHeight ) {
+      moveScrollToReceiveMessage();
+    } 
+  },[scrollHeight]);
+
+
   return (
-    <div className="chat-window card" ref={chatWindow}>
+    <div className="chat-window card w-full h-[50vh] overflow-auto" ref={chatWindow}>
       {messages.map((message, index) => {
         return <MessageItem key={index} message={message} />;
       })}
