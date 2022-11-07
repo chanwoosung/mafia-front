@@ -19,4 +19,5 @@ export const ROUTE_PATH = {
 
 export const API_PATH = {
     LOGIN: '/confirm',
+    MY_ROLE: '/get-myRole',
 }

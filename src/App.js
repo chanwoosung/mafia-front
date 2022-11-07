@@ -6,7 +6,8 @@ import { ROUTE_PATH, SOCKET_EVENT } from './constant/constant';
 import {Route, Routes} from 'react-router-dom'
 import { AccountContextContainer } from './context/account';
 import { QueryClient, QueryClientProvider } from 'react-query';
-
+import { Provider } from 'react-redux';
+import store from './store';
 const Home = lazy(()=> import('./pages/Home'))
 const Lobby = lazy(()=> import('./pages/Lobby'))
 const Room = lazy(()=> import('./pages/Room'))
@@ -18,22 +19,24 @@ function App() {
   
   return (
     <div className="App min-h-[100vh]">
+      <Provider store={store}>
       <SocketContext.Provider value={{socket,ip}}>
-        <QueryClientProvider client={queryClient}>
-          <AccountContextContainer>
-            <Suspense>
-              <Routes>
-                <Route path={ROUTE_PATH.HOME} element={<Home />}>
-                  <Route path={ROUTE_PATH.LOBBY} element={<Lobby />}>
-                  </Route>
-                  <Route path={ROUTE_PATH.ROOM} element={<Room />} />
-                  <Route path='*' element={<div>error</div>} />
-                </Route>
-              </Routes>
-            </Suspense>
-          </AccountContextContainer>
-        </QueryClientProvider>
+            <QueryClientProvider client={queryClient}>
+              <AccountContextContainer>
+                <Suspense>
+                  <Routes>
+                    <Route path={ROUTE_PATH.HOME} element={<Home />}>
+                      <Route path={ROUTE_PATH.LOBBY} element={<Lobby />}>
+                      </Route>
+                      <Route path={ROUTE_PATH.ROOM} element={<Room />} />
+                      <Route path='*' element={<div>error</div>} />
+                    </Route>
+                  </Routes>
+                </Suspense>
+              </AccountContextContainer>
+            </QueryClientProvider>
       </SocketContext.Provider>
+      </Provider>
     </div>
   );
 }

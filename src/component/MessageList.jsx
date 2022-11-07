@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
+import { useSelector } from "react-redux";
 import { makeMessage, SocketContext, SOCKET_EVENT } from "../service/socket";
+import {  selectProduct } from "../store";
 
 import MessageItem from "./MessageItem";
 

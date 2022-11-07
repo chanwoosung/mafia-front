@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../component/Button";
 import ChatForm from "../component/ChatForm";
@@ -8,6 +9,7 @@ import { AccountContext } from "../context/account";
 import postCancelReady from "../service/postCancelReady";
 import postGetReady from "../service/postGetReady";
 import { socket, SocketContext } from "../service/socket";
+import { setRoomAccountInfo } from "../store";
 
 export default function Room() {
     const { roomId } = useParams();
@@ -18,6 +20,8 @@ export default function Room() {
     const [process,setProcess] = useState(false);
     const [ready,setReady] = useState(false);
 
+    const dispatch = useDispatch();
+
     const quitRoom = () => {
         socket.emit(SOCKET_EVENT.QUIT_ROOM, { ip:account.ip, nickname:account.nickname,roomId:roomId });
         navigate('/lobby');
@@ -25,6 +29,14 @@ export default function Room() {
     const getReady = async() => {
         const data = await postGetReady({params: { ip:account.ip, nickname:account.nickname,roomId:roomId }});
         setReady(true);
+        sessionStorage.setItem('ip',account.ip);
+        sessionStorage.setItem('nickname',account.nickname);
+        sessionStorage.setItem('roomId',roomId);
+        // dispatch(setRoomAccountInfo({
+        //     ip:account.ip,
+        //     nickname:account.nickname,
+        //     roomId
+        // }))
         console.log(data);
         if(data.allReady) {
             socket.emit(SOCKET_EVENT.ALL_READY,{ roomId:roomId });
