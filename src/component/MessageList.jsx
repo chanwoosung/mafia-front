@@ -1,7 +1,5 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
-import { useSelector } from "react-redux";
 import { makeMessage, SocketContext, SOCKET_EVENT } from "../service/socket";
-import {  selectProduct } from "../store";
 
 import MessageItem from "./MessageItem";
 
@@ -20,8 +18,8 @@ function MessageList() {
   }, []);
 
   const handleReceiveMessage = useCallback(
-    pongData => {
-      const newMessage = makeMessage(pongData);
+    async pongData => {
+      const newMessage = await makeMessage(pongData);
       setMessages([...messages, newMessage]);
       setScrollHeight(chatWindow.current.scrollHeight);
     },

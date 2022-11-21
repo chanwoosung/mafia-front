@@ -39,6 +39,7 @@ export default function Room() {
         // }))
         console.log(data);
         if(data.allReady) {
+            console.log('work?')
             socket.emit(SOCKET_EVENT.ALL_READY,{ roomId:roomId });
         }
     }
