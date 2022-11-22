@@ -11,7 +11,7 @@ export default function Home({nickname}) {
             {pathname === ROUTE_PATH.HOME ? (
                 <Login />
             ) : (
-                <div className="min-h-[100vh]">
+                <div className="min-h-[100vh] pt-16">
                     <Outlet />
                 </div>
             )}

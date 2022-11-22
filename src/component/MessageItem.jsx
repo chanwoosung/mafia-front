@@ -6,7 +6,7 @@ function MessageItem({ message }) {
   return (
     <div className="d-flex flex-row">
       {nickname && <div className="message-nickname">{nickname}: </div>}
-      <div>{content}</div>
+      <div className="whitespace-pre">{content}</div>
       <div className="time">{time}</div>
     </div>
   );

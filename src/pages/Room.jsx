@@ -10,6 +10,7 @@ import postCancelReady from "../service/postCancelReady";
 import postGetReady from "../service/postGetReady";
 import { socket, SocketContext } from "../service/socket";
 import { setRoomAccountInfo } from "../store";
+import {  resetRoomInfo } from "../store/slices/roomSlice";
 
 export default function Room() {
     const { roomId } = useParams();
@@ -23,6 +24,7 @@ export default function Room() {
     const dispatch = useDispatch();
 
     const quitRoom = () => {
+        dispatch(resetRoomInfo());
         socket.emit(SOCKET_EVENT.QUIT_ROOM, { ip:account.ip, nickname:account.nickname,roomId:roomId });
         navigate('/lobby');
     }
@@ -39,7 +41,6 @@ export default function Room() {
         // }))
         console.log(data);
         if(data.allReady) {
-            console.log('work?')
             socket.emit(SOCKET_EVENT.ALL_READY,{ roomId:roomId });
         }
     }

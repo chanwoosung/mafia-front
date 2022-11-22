@@ -1,14 +1,20 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
-import { makeMessage, SocketContext, SOCKET_EVENT } from "../service/socket";
+import { useSelector } from "react-redux";
+import { handleEvent, makeMessage, SocketContext, SOCKET_EVENT } from "../service/socket";
+import { useAppDispatch, useAppSelector } from "../store";
+import { selectRoomState } from "../store/slices/roomSlice";
 
 import MessageItem from "./MessageItem";
 
 function MessageList() {
-  const [messages, setMessages] = useState([]);
   const [scrollHeight, setScrollHeight] = useState(0);
   const chatWindow = useRef(null);
   const {socket} = useContext(SocketContext);
+  const dispatch = useAppDispatch();
+  const roomInfo = useAppSelector(selectRoomState);
+  const reduxState = useAppSelector(state=>state);
   const moveScrollToReceiveMessage = useCallback(() => {
+    console.log(chatWindow.current)
     if (chatWindow.current) {
       chatWindow.current.scrollTo({
         top: chatWindow.current.scrollHeight,
@@ -19,30 +25,32 @@ function MessageList() {
 
   const handleReceiveMessage = useCallback(
     async pongData => {
-      const newMessage = await makeMessage(pongData);
-      setMessages([...messages, newMessage]);
+      await makeMessage(pongData,dispatch,reduxState);
       setScrollHeight(chatWindow.current.scrollHeight);
     },
-    [messages]
+    [roomInfo.chatLog]
   );
+
+  const listenSocketState = useCallback(async socketData =>{
+    await handleEvent(socketData,dispatch,reduxState);
+  },[dispatch, reduxState]);
 
   useEffect(() => {
     socket.on(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
+    socket.on(SOCKET_EVENT.RECEIVE_EVENT, listenSocketState);
     return () => {
       socket.off(SOCKET_EVENT.RECEIVE_MESSAGE, handleReceiveMessage);
     };
-  }, [socket, handleReceiveMessage]);
+  }, []);
 
   useEffect(()=>{
-    if(scrollHeight !== chatWindow.current.scrollHeight ) {
       moveScrollToReceiveMessage();
-    } 
   },[scrollHeight]);
 
 
   return (
-    <div className="chat-window card w-full h-[50vh] overflow-auto" ref={chatWindow}>
-      {messages.map((message, index) => {
+    <div className="chat-window card w-full max-h-[50vh] overflow-auto pt-5" ref={chatWindow}>
+      {roomInfo.chatLog.map((message, index) => {
         return <MessageItem key={index} message={message} />;
       })}
     </div>

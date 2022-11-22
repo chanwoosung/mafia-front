@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useCallback } from "react";
 import { Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +7,7 @@ import BottomSheet from "./BottomSheet";
 import Button from "./Button";
 
 export default function MakeRoomBottomSheet({form,setIsOpenBottomSheet, account}) {
-    const {register,handleSubmit,reset,control} = form
+    const {register,handleSubmit,reset,control,setFocus} = form
     const navigate = useNavigate();
 
     const onSubmit = useCallback(
@@ -37,6 +38,10 @@ export default function MakeRoomBottomSheet({form,setIsOpenBottomSheet, account}
       },
       [],
     )
+
+    useEffect(()=> {
+        setFocus('roomName');
+    })
     
     const handleClose = () => {
         setIsOpenBottomSheet(false);
@@ -53,7 +58,8 @@ export default function MakeRoomBottomSheet({form,setIsOpenBottomSheet, account}
                             <input type="text" placeholder="방제" id="roomName" name="roomName" className="w-full h-10 required:border-red-500 required:text-red placeholder:italic placeholder:text-center text-bgPrimary pl-1" 
                                 {
                                     ...register("roomName", {
-                                        required: "값을 입력해주세요."
+                                        required: "값을 입력해주세요.",
+                                        focus:true
                                     })
                                 }
                             />
