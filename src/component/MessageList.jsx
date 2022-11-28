@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
-import { useSelector } from "react-redux";
 import { handleEvent, makeMessage, SocketContext, SOCKET_EVENT } from "../service/socket";
 import { useAppDispatch, useAppSelector } from "../store";
 import { selectRoomState } from "../store/slices/roomSlice";
@@ -12,9 +11,9 @@ function MessageList() {
   const {socket} = useContext(SocketContext);
   const dispatch = useAppDispatch();
   const roomInfo = useAppSelector(selectRoomState);
+  const [chat,setChat] = useState(roomInfo.chatLog);
   const reduxState = useAppSelector(state=>state);
   const moveScrollToReceiveMessage = useCallback(() => {
-    console.log(chatWindow.current)
     if (chatWindow.current) {
       chatWindow.current.scrollTo({
         top: chatWindow.current.scrollHeight,
@@ -28,7 +27,7 @@ function MessageList() {
       await makeMessage(pongData,dispatch,reduxState);
       setScrollHeight(chatWindow.current.scrollHeight);
     },
-    [roomInfo.chatLog]
+    [chat]
   );
 
   const listenSocketState = useCallback(async socketData =>{

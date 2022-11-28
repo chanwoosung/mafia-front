@@ -4,23 +4,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import Button from "../component/Button";
 import ChatForm from "../component/ChatForm";
 import MessageList from "../component/MessageList";
+import VoteListBottomSheet from "../component/VoteListBottomSheet";
 import { SOCKET_EVENT } from "../constant/constant";
 import { AccountContext } from "../context/account";
 import postCancelReady from "../service/postCancelReady";
 import postGetReady from "../service/postGetReady";
 import { socket, SocketContext } from "../service/socket";
-import { setRoomAccountInfo } from "../store";
-import {  resetRoomInfo } from "../store/slices/roomSlice";
+import { setRoomAccountInfo, useAppSelector } from "../store";
+import {  resetRoomInfo, setRoomId } from "../store/slices/roomSlice";
 
 export default function Room() {
     const { roomId } = useParams();
     const navigate = useNavigate();
     const {socket,ip} = useContext(SocketContext);
     const {account} = useContext(AccountContext);
-
-    const [process,setProcess] = useState(false);
+    const selector = useAppSelector(state=>state.roomInfo)
+    const [isOpen,setIsOpen] = useState(false);
     const [ready,setReady] = useState(false);
-
     const dispatch = useDispatch();
 
     const quitRoom = () => {
@@ -34,12 +34,6 @@ export default function Room() {
         sessionStorage.setItem('ip',account.ip);
         sessionStorage.setItem('nickname',account.nickname);
         sessionStorage.setItem('roomId',roomId);
-        // dispatch(setRoomAccountInfo({
-        //     ip:account.ip,
-        //     nickname:account.nickname,
-        //     roomId
-        // }))
-        console.log(data);
         if(data.allReady) {
             socket.emit(SOCKET_EVENT.ALL_READY,{ roomId:roomId });
         }
@@ -53,7 +47,11 @@ export default function Room() {
         if(ip===undefined) {
           return;
         }
+        console.log({ ip:account.ip, nickname:account.nickname,roomId:roomId });
         socket.emit(SOCKET_EVENT.JOIN_ROOM, { ip:account.ip, nickname:account.nickname,roomId:roomId });
+        dispatch(setRoomId({
+            roomId:roomId,
+        }))
         return () => {
           if (socket.readyState === 1) { 
               socket.emit(SOCKET_EVENT.QUIT_ROOM, { ip:account.ip, nickname:account.nickname,roomId:roomId });
@@ -70,8 +68,10 @@ export default function Room() {
             </div>
             <MessageList nickname={account.nickname} roomId={roomId}  ip={ip} />
             <ChatForm nickname={account.nickname} roomId={roomId} ip={ip} />
-            {!process && !ready && <Button theme="Accent" text="Get Ready" onClick={getReady} className="fixed bottom-[56px] left-0 w-full" />}
-            {!process && ready && <Button theme="Accent" text="Cancel Ready" onClick={cancelReady} className="fixed bottom-[56px] left-0 w-full" />}
+            {!selector.isPlay && !ready && <Button theme="Accent" text="Get Ready" onClick={getReady} className="fixed bottom-[56px] left-0 w-full" />}
+            {!selector.isPlay && ready && <Button theme="Accent" text="Cancel Ready" onClick={cancelReady} className="fixed bottom-[56px] left-0 w-full" />}
+            {selector.isPlay && <Button theme="Accent" text="Vote List" onClick={()=>setIsOpen(true)} className="fixed bottom-[56px] left-0 w-full" />}
+            {selector.isPlay && isOpen && <VoteListBottomSheet setIsOpenBottomSheet={setIsOpen} />}
         </>
     )
 }
