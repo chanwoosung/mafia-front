@@ -2,8 +2,8 @@ import { createContext } from "react";
 import socketClient from "socket.io-client";
 import dayjs from "dayjs";
 import getMyRole from "./getMyRole";
-import { toggleIsPlay, toggleIsVotingPeriod, toggleOffIsVotingPeriod, updateChatLog } from "../store/slices/roomSlice";
-import { setUserList } from "../store/slices/userSlice";
+import { setMyJob, toggleIsPlay, toggleIsVotingPeriod, toggleOffIsVotingPeriod, updateChatLog } from "../store/slices/roomSlice";
+import { setUserList, toggleOffUserState } from "../store/slices/userSlice";
 
 export const socket = socketClient(String(process.env.REACT_APP_BACK_URL), { withCredentials: true });
 export const SocketContext = createContext(socket);
@@ -17,6 +17,10 @@ export const SOCKET_EVENT = {
   END_VOTE: "END_VOTE",
   RECEIVE_EVENT: "RECEIVE_EVENT",
   ANNOUNCE_RESULT:'ANNOUNCE_RESULT',
+  GAME_CONTINUE: "GAME_CONTINUE",
+  GAME_END: "GAME_END",
+  MAFIA_TIME: "MAFIA_TIME",
+  KILL_CITIZEN: "KILL_CITIZEN",
 };
 
 export const handleEvent = async (socketData,dispatch,state) => {
@@ -32,6 +36,7 @@ export const handleEvent = async (socketData,dispatch,state) => {
         }).then(({data})=> {
           console.log(data);
           dispatch(setUserList(data.userList));
+          dispatch(setMyJob(data.role));
           makeMessage({
             type:SOCKET_EVENT.SEND_MESSAGE,
             nickname:sessionStorage.getItem('nickname'),
@@ -44,7 +49,7 @@ export const handleEvent = async (socketData,dispatch,state) => {
          },dispatch);
         });
       break;
-      case SOCKET_EVENT.ANNOUNCE_RESULT:
+    case SOCKET_EVENT.ANNOUNCE_RESULT:
       dispatch(toggleOffIsVotingPeriod());
       console.log(content);
       console.log(socketData);
@@ -57,19 +62,37 @@ export const handleEvent = async (socketData,dispatch,state) => {
           },dispatch);  
         } else {
           makeMessage({
-          type:SOCKET_EVENT.SEND_MESSAGE,
-          nickname:'SYSTEM',
-          content :`총 ${content.count}표를 받으신 ${content.nicknameArr[0]}님은 처형되었습니다.`
-        },dispatch);
+            type:SOCKET_EVENT.SEND_MESSAGE,
+            nickname:'SYSTEM',
+            content :`총 ${content.count}표를 받으신 ${content.nicknameArr[0]}님은 처형되었습니다.`
+          },dispatch);
+          dispatch(toggleOffUserState({nickname:content.nicknameArr[0]}));
         }
     }
     if(content.nicknameArr.length>1) {
+        makeMessage({
+        type:SOCKET_EVENT.SEND_MESSAGE,
+        nickname:'SYSTEM',
+        content :`동률 ${content.count}표로 처형은 보류되었습니다.`
+      },dispatch);
+    }
+      break;
+    case SOCKET_EVENT.GAME_END:
       makeMessage({
-      type:SOCKET_EVENT.SEND_MESSAGE,
-      nickname:'SYSTEM',
-      content :`동률 ${content.count}표로 처형은 보류되었습니다.`
-    },dispatch);
-  }
+        type:SOCKET_EVENT.SEND_MESSAGE,
+        nickname:'SYSTEM',
+        content :`${content}`
+      },dispatch);
+      break;
+    case SOCKET_EVENT.MAFIA_TIME:
+      makeMessage({
+        type:SOCKET_EVENT.MAFIA_TIME,
+        nickname:'SYSTEM',
+        content :`${content}`
+      },dispatch);
+      if(state.roomInfo.myJob === 'mafia') {
+        dispatch(toggleIsVotingPeriod());
+      }
       break;
     default:
       break;

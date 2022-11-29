@@ -4,8 +4,10 @@ const initialState = {
     ip:'',
     nickname:'',
     roomId:'',
+    myJob: '',
     isPlay: false,
     isVotingPeriod:false,
+    isMafiaTime:false,
     chatLog: [],
 }
 
@@ -18,7 +20,9 @@ export const roomInfoSlice = createSlice({
             state.chatLog=[];
             state.nickname = '';
             state.roomId = '';
+            state.myJob = '';
             state.isVotingPeriod = false;
+            state.isMafiaTime = false;
             state.isPlay = false;
         },
         setRoomInfo(state,action) {
@@ -41,10 +45,16 @@ export const roomInfoSlice = createSlice({
         },
         toggleOnIsVotingPeriod(state) {
             state.isVotingPeriod = true
+        },
+        setMyJob(state,action) {
+            state.myJob = action.payload
+        },
+        toggleIsMafiaTime(state) {
+            state.isMafiaTime =!state.isMafiaTime
         }
 
     }
 });
 export const selectRoomState = (state) => state.roomInfo 
 
-export const  {resetRoomInfo,setRoomInfo,setRoomId,toggleIsPlay,updateChatLog,toggleIsVotingPeriod,toggleOffIsVotingPeriod,toggleOnIsVotingPeriod} = roomInfoSlice.actions
+export const  {resetRoomInfo,setRoomInfo,setRoomId,toggleIsPlay,updateChatLog,toggleIsVotingPeriod,toggleOffIsVotingPeriod,toggleOnIsVotingPeriod,setMyJob,toggleIsMafiaTime} = roomInfoSlice.actions

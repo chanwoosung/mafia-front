@@ -1,8 +1,10 @@
+import { useCallback, useMemo } from "react";
 import { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../component/Button";
 import ChatForm from "../component/ChatForm";
+import MafiaBottomSheet from "../component/MafiaBottomSheet";
 import MessageList from "../component/MessageList";
 import VoteListBottomSheet from "../component/VoteListBottomSheet";
 import { SOCKET_EVENT } from "../constant/constant";
@@ -18,7 +20,7 @@ export default function Room() {
     const navigate = useNavigate();
     const {socket,ip} = useContext(SocketContext);
     const {account} = useContext(AccountContext);
-    const selector = useAppSelector(state=>state.roomInfo)
+    const {roomInfo,user} = useAppSelector(state=>state)
     const [isOpen,setIsOpen] = useState(false);
     const [ready,setReady] = useState(false);
     const dispatch = useDispatch();
@@ -68,10 +70,11 @@ export default function Room() {
             </div>
             <MessageList nickname={account.nickname} roomId={roomId}  ip={ip} />
             <ChatForm nickname={account.nickname} roomId={roomId} ip={ip} />
-            {!selector.isPlay && !ready && <Button theme="Accent" text="Get Ready" onClick={getReady} className="fixed bottom-[56px] left-0 w-full" />}
-            {!selector.isPlay && ready && <Button theme="Accent" text="Cancel Ready" onClick={cancelReady} className="fixed bottom-[56px] left-0 w-full" />}
-            {selector.isPlay && <Button theme="Accent" text="Vote List" onClick={()=>setIsOpen(true)} className="fixed bottom-[56px] left-0 w-full" />}
-            {selector.isPlay && isOpen && <VoteListBottomSheet setIsOpenBottomSheet={setIsOpen} />}
+            {!roomInfo.isPlay && !ready && <Button theme="Accent" text="Get Ready" onClick={getReady} className="fixed bottom-[56px] left-0 w-full" />}
+            {!roomInfo.isPlay && ready && <Button theme="Accent" text="Cancel Ready" onClick={cancelReady} className="fixed bottom-[56px] left-0 w-full" />}
+            {roomInfo.isPlay && <Button theme="Accent" text="Vote List" onClick={()=>setIsOpen(true)} className="fixed bottom-[56px] left-0 w-full" />}
+            {roomInfo.isPlay && isOpen && <VoteListBottomSheet setIsOpenBottomSheet={setIsOpen} />}
+            {roomInfo.isMafiaTime && <MafiaBottomSheet setIsOpenBottomSheet={setIsOpen} />}
         </>
     )
 }
