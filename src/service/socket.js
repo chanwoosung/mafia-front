@@ -25,7 +25,7 @@ export const SOCKET_EVENT = {
 };
 
 export const handleEvent = async (socketData,dispatch,state) => {
-  const { content, type, time, nickname } = socketData;
+  const { content, type, time, nickname } = socketData; //소켓에서 들어오는 데이터
 
   switch (type) {
     case SOCKET_EVENT.GAME_START:
