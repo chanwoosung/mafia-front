@@ -23,11 +23,12 @@ export default function VoteListBottomSheet({setIsOpenBottomSheet}) {
         reset();
     }
     
-    const onClick = useCallback(async(nickname)=>{
+    const onClick = useCallback(async({id,value:nickname})=>{
         dispatch(toggleOffIsVotingPeriod());
         await client.post('/vote-mafia',{
             params:{
                 ip,
+                id,
                 roomId: roomInfo.roomId,
                 vote:nickname
             }
@@ -66,8 +67,9 @@ export default function VoteListBottomSheet({setIsOpenBottomSheet}) {
                             return (
                                 <div key={index}>
                                     <button className="border border-white bg-bgAccent text-black text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={!roomInfo.isVotingPeriod}
-                                    onClick={(e)=>onClick(e.currentTarget.value)}
-                                    value={item.nickname}>
+                                    onClick={(e)=>onClick(e.currentTarget)}
+                                    value={item.nickname}
+                                    id={item._id}>
                                     {item.nickname}
                                     </button>
                                 </div>

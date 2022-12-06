@@ -21,9 +21,9 @@ export default function MafiaBottomSheet({setIsOpenBottomSheet}) {
         reset();
     }
     
-    const onClick = useCallback(async(nickname)=>{
+    const onClick = useCallback(async({id,value:nickname})=>{
         dispatch(toggleIsMafiaTime());
-        socket.emit(SOCKET_EVENT.KILL_CITIZEN, { ip:account.ip, nickname:nickname,roomId:roomInfo.roomId });
+        socket.emit(SOCKET_EVENT.KILL_CITIZEN, { id,ip:account.ip, nickname:nickname,roomId:roomInfo.roomId });
         handleClose();
     },[])
     
@@ -50,8 +50,9 @@ export default function MafiaBottomSheet({setIsOpenBottomSheet}) {
                             return (
                                 <div key={index}>
                                     <button className="border border-white bg-bgAccent text-black text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={!roomInfo.isVotingPeriod}
-                                    onClick={(e)=>onClick(e.currentTarget.value)}
-                                    value={item.nickname}>
+                                    onClick={(e)=>onClick(e.currentTarget)}
+                                    value={item.nickname}
+                                    id={item._id}>
                                     {item.nickname}
                                     </button>
                                 </div>

@@ -18,7 +18,8 @@ export const SOCKET_EVENT = {
   RECEIVE_EVENT: "RECEIVE_EVENT",
   ANNOUNCE_RESULT:'ANNOUNCE_RESULT',
   GAME_CONTINUE: "GAME_CONTINUE",
-  GAME_END: "GAME_END",
+  MAFIA_GAME_END: "MAFIA_GAME_END",
+  CITIZEN_GAME_END: "CITIZEN_GAME_END",
   MAFIA_TIME: "MAFIA_TIME",
   KILL_CITIZEN: "KILL_CITIZEN",
 };
@@ -77,7 +78,14 @@ export const handleEvent = async (socketData,dispatch,state) => {
       },dispatch);
     }
       break;
-    case SOCKET_EVENT.GAME_END:
+    case SOCKET_EVENT.MAFIA_GAME_END:
+      makeMessage({
+        type:SOCKET_EVENT.SEND_MESSAGE,
+        nickname:'SYSTEM',
+        content :`${content}`
+      },dispatch);
+      break;
+    case SOCKET_EVENT.CITIZEN_GAME_END:
       makeMessage({
         type:SOCKET_EVENT.SEND_MESSAGE,
         nickname:'SYSTEM',
