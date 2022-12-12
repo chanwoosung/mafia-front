@@ -2,7 +2,7 @@ import { createContext } from "react";
 import socketClient from "socket.io-client";
 import dayjs from "dayjs";
 import getMyRole from "./getMyRole";
-import { setMyJob, toggleIsPlay, toggleIsVotingPeriod, toggleOffIsVotingPeriod, updateChatLog } from "../store/slices/roomSlice";
+import { setMyJob, toggleIsMafiaTime, toggleIsPlay, toggleIsVotingPeriod, toggleOffIsVotingPeriod, toggleOffMafiaTime, toggleOnIsVotingPeriod, updateChatLog } from "../store/slices/roomSlice";
 import { setUserList, toggleOffUserState } from "../store/slices/userSlice";
 
 export const socket = socketClient(String(process.env.REACT_APP_BACK_URL), { withCredentials: true });
@@ -93,14 +93,25 @@ export const handleEvent = async (socketData,dispatch,state) => {
       },dispatch);
       break;
     case SOCKET_EVENT.MAFIA_TIME:
+      console.log('work??',content,state)
       makeMessage({
         type:SOCKET_EVENT.MAFIA_TIME,
         nickname:'SYSTEM',
         content :`${content}`
       },dispatch);
-      if(state.roomInfo.myJob === 'mafia') {
-        dispatch(toggleIsVotingPeriod());
-      }
+        dispatch(toggleIsMafiaTime());
+      console.log('work!!',content,state)
+      break;
+      case SOCKET_EVENT.KILL_CITIZEN:
+      console.log('work??',content,state)
+      makeMessage({
+        type:SOCKET_EVENT.MAFIA_TIME,
+        nickname:'SYSTEM',
+        content :`${content}`
+      },dispatch);
+        dispatch(toggleOffMafiaTime());
+      console.log('work!!',content,state,nickname)
+      dispatch(toggleOffUserState({nickname:nickname}));
       break;
     default:
       break;
@@ -146,6 +157,14 @@ export const makeMessage = async(pongData,dispatch,state) => {
       time: dayjs(time).format("HH:mm"),
     }));
     dispatch(toggleIsVotingPeriod());
+    break;
+  }
+  case SOCKET_EVENT.MAFIA_TIME: {
+    dispatch(updateChatLog({
+      nickname: 'SYSTEM',
+      content:content,
+      time: dayjs(time).format("HH:mm"),
+    }));
     break;
   }
     default:

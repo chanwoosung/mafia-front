@@ -49,7 +49,7 @@ export default function MafiaBottomSheet({setIsOpenBottomSheet}) {
                         } else {
                             return (
                                 <div key={index}>
-                                    <button className="border border-white bg-bgAccent text-black text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={!roomInfo.isVotingPeriod}
+                                    <button className="border border-white bg-bgAccent text-black text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={!roomInfo.isMafiaTime}
                                     onClick={(e)=>onClick(e.currentTarget)}
                                     value={item.nickname}
                                     id={item._id}>

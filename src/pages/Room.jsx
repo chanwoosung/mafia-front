@@ -73,8 +73,8 @@ export default function Room() {
             {!roomInfo.isPlay && !ready && <Button theme="Accent" text="Get Ready" onClick={getReady} className="fixed bottom-[56px] left-0 w-full" />}
             {!roomInfo.isPlay && ready && <Button theme="Accent" text="Cancel Ready" onClick={cancelReady} className="fixed bottom-[56px] left-0 w-full" />}
             {roomInfo.isPlay && <Button theme="Accent" text="Vote List" onClick={()=>setIsOpen(true)} className="fixed bottom-[56px] left-0 w-full" />}
-            {roomInfo.isPlay && isOpen && <VoteListBottomSheet setIsOpenBottomSheet={setIsOpen} />}
-            {roomInfo.isMafiaTime && <MafiaBottomSheet setIsOpenBottomSheet={setIsOpen} />}
+            {!roomInfo.isMafiaTime &&roomInfo.isPlay && isOpen && <VoteListBottomSheet setIsOpenBottomSheet={setIsOpen} />}
+            {roomInfo.myJob === 'mafia' &&roomInfo.isMafiaTime && <MafiaBottomSheet setIsOpenBottomSheet={setIsOpen} />}
         </>
     )
 }

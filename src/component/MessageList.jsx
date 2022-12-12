@@ -31,6 +31,7 @@ function MessageList() {
   );
 
   const listenSocketState = useCallback(async socketData =>{
+    console.log("reduxState",reduxState)
     await handleEvent(socketData,dispatch,reduxState);
   },[dispatch, reduxState]);
 

@@ -17,6 +17,11 @@ export default function VoteListBottomSheet({setIsOpenBottomSheet}) {
     const dispatch = useAppDispatch();
     console.log(user, roomInfo);
     
+    const checkAlive = useCallback(()=>{
+        const alive = user.userList.find(element => element.nickname === account.nickname && element.live)
+        if(alive===undefined) return false;
+        else return true
+    },[])
     
     const handleClose = () => {
         setIsOpenBottomSheet(false);
@@ -56,7 +61,7 @@ export default function VoteListBottomSheet({setIsOpenBottomSheet}) {
                         if(item.live=== false) {
                             return (
                                 <div key={index}>
-                                    <button className="border border-white bg-orange-600 text-white text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={!roomInfo.isVotingPeriod}
+                                    <button className="border border-white bg-orange-600 text-white text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={true}
                                     onClick={(e)=>onClick(e.currentTarget.value)}
                                     value={item.nickname}>
                                     {item.nickname} 사망
@@ -66,7 +71,7 @@ export default function VoteListBottomSheet({setIsOpenBottomSheet}) {
                         } else {
                             return (
                                 <div key={index}>
-                                    <button className="border border-white bg-bgAccent text-black text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={!roomInfo.isVotingPeriod}
+                                    <button className="border border-white bg-bgAccent text-black text-lg font-semibold rounded-md text-center h-12 flex justify-center flex-col items-center w-full disabled:opacity-50" disabled={!roomInfo.isVotingPeriod||!checkAlive()}
                                     onClick={(e)=>onClick(e.currentTarget)}
                                     value={item.nickname}
                                     id={item._id}>
@@ -83,8 +88,10 @@ export default function VoteListBottomSheet({setIsOpenBottomSheet}) {
                         theme="Accent"
                         text="투표 넘기기"
                         className="py-[10px] w-full !text-sm font-Pretendard !leading-normal disabled:opacity-50"
-                        onClick={()=>onClick('abstain')}
-                        disable={!roomInfo.isVotingPeriod}
+                        onClick={(e)=>onClick(e.currentTarget)}
+                        value={'기권'}
+                        id={roomInfo.roomId}
+                        disable={!roomInfo.isVotingPeriod||!checkAlive()}
                         />
                 </div>
             </BottomSheet>

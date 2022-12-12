@@ -51,10 +51,13 @@ export const roomInfoSlice = createSlice({
         },
         toggleIsMafiaTime(state) {
             state.isMafiaTime =!state.isMafiaTime
+        },
+        toggleOffMafiaTime(state) {
+            state.isMafiaTime =false
         }
 
     }
 });
 export const selectRoomState = (state) => state.roomInfo 
 
-export const  {resetRoomInfo,setRoomInfo,setRoomId,toggleIsPlay,updateChatLog,toggleIsVotingPeriod,toggleOffIsVotingPeriod,toggleOnIsVotingPeriod,setMyJob,toggleIsMafiaTime} = roomInfoSlice.actions
+export const  {resetRoomInfo,setRoomInfo,setRoomId,toggleIsPlay,updateChatLog,toggleIsVotingPeriod,toggleOffIsVotingPeriod,toggleOnIsVotingPeriod,setMyJob,toggleIsMafiaTime,toggleOffMafiaTime} = roomInfoSlice.actions
